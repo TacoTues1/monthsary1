@@ -1,38 +1,203 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+}
+
 .App {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Stars */
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.stars, .stars2, .stars3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="white" opacity="0.8"/></svg>') repeat top center;
+  animation: twinkle 5s ease-in-out infinite;
+}
+
+.stars2 {
+  background-size: 200px 200px;
+  animation: twinkle 5s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+.stars3 {
+  background-size: 300px 300px;
+  animation: twinkle 5s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+}
+
+/* Content */
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
+  z-index: 10;
+  max-width: 800px;
+  padding: 20px;
 }
 
-.App-logo {
-  height: 40vmin;
+.title {
+  font-size: 4.5rem;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+  margin-bottom: 20px;
+  animation: gentleGlow 3s ease-in-out infinite;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-align: center;
+  font-family: 'Georgia', serif;
+  position: relative;
+}
+.subtitle {
+  color: #ff0000;
+  text-shadow: 0 0 10px #ff0000;
+  font-weight: bold;
+  animation: gentleGlow 3s ease-in-out infinite;
+}
+
+@keyframes gentleGlow {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 20px rgba(255, 107, 107, 0.3));
+  }
+  50% {
+    filter: brightness(1.2) drop-shadow(0 0 30px rgba(255, 107, 107, 0.6));
+  }
+}
+
+/* Falling Messages */
+.falling-message {
+  position: absolute;
+  top: -50px;
+  color: #ff0000;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-shadow: 
+    0 0 10px #ff0000,
+    0 0 20px #ff0000;
+  animation: fall 10s linear forwards;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+    letter-spacing: 1px;
+  }
+}
+
+.flower {
+  position: fixed;
   pointer-events: none;
+  z-index: 20;
+  animation: flowerGrow 3s ease-out forwards;
+  width: 100px; /* example size */
+  height: 100px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Petals */
+.petal {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  border-radius: 200%;
+  background: pink;
+  transform-origin: center bottom;
+  box-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+}
+
+/* Perfectly centered yellow core */
+.flower .center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130%;
+  height: 130%;
+  background: yellow;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+}
+
+/* Animation */
+@keyframes flowerGrow {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
   }
-  to {
-    transform: rotate(360deg);
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 0;
   }
 }
