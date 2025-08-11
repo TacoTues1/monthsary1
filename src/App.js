@@ -4,8 +4,10 @@ import './App.css';
 function App() {
   const [messages, setMessages] = useState([]);
   const [flowers, setFlowers] = useState([]);
+  const [clickCount, setClickCount] = useState(0);
 
-  const loveMessages = [
+  // changed: wrapped loveMessages in useMemo to fix eslint warning
+  const loveMessages = React.useMemo(() => [
     "I love you",
     "You're the prettiest in my eyes",
     "You make my heart smile",
@@ -36,9 +38,24 @@ function App() {
     "You're my treasure",
     "My love is endless",
     "You're my miracle"
-  ];
+  ], []);
 
   const handleClick = (e) => {
+    // Don't allow clicks after reaching 3
+    if (clickCount >= 3) {
+      return;
+    }
+
+    // Increment click counter
+    const newClickCount = clickCount + 1;
+    setClickCount(newClickCount);
+    
+    // Check if we should redirect after 3 clicks
+    if (newClickCount >= 3) {
+      window.open('https://flowerforressa.netlify.app/', '_blank');
+      return;
+    }
+
     // CHANGED: Added random size and rotation + centered flower on cursor
     const size = Math.random() * 15 + 30; // 30–45px
     const rotation = Math.random() * 360; // Random rotation angle
@@ -73,7 +90,7 @@ function App() {
     }, 800); // Reduced interval for more frequent bursts
 
     return () => clearInterval(interval);
-  }, [messages]);
+  }, [messages, loveMessages]); // changed: added loveMessages to dependencies
 
   useEffect(() => {
     const cleanup = setInterval(() => {
@@ -102,6 +119,11 @@ function App() {
       <div className="content">
         <h1 className="title">Happy 40th Monthsary! Love</h1>
         <h5 className="subtitle">Click to everywhere in the website</h5>
+        
+        {/* Simple click counter */}
+        <div className="click-counter">
+          <p className='click-counter-text'>Clicks: {clickCount}/3</p>
+        </div>
       </div>
 
       {messages.map(message => (

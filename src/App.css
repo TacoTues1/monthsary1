@@ -108,7 +108,12 @@ body {
   font-weight: bold;
   animation: gentleGlow 3s ease-in-out infinite;
 }
-
+.click-counter-text{
+  color: #ff0000;
+  text-shadow: 0 0 10px #ff0000;
+  font-weight: bold;
+  animation: gentleGlow 3s ease-in-out infinite;
+}
 @keyframes gentleGlow {
   0%, 100% {
     filter: brightness(1) drop-shadow(0 0 20px rgba(255, 107, 107, 0.3));
@@ -199,4 +204,16 @@ body {
     transform: scale(1) rotate(360deg);
     opacity: 0;
   }
+}
+
+/* Simple Click Counter */
+.click-counter {
+  margin-top: 20px;
+}
+
+.click-counter p {
+  color: white;
+  font-size: 16px;
+  margin: 5px 0;
+  font-family: Arial, sans-serif;
 }
