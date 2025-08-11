@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [flowers, setFlowers] = useState([]);
   const [clickCount, setClickCount] = useState(0);
+  const [musicStarted, setMusicStarted] = useState(false);
+  const audioRef = useRef(null);
 
   // changed: wrapped loveMessages in useMemo to fix eslint warning
   const loveMessages = React.useMemo(() => [
@@ -41,6 +43,16 @@ function App() {
   ], []);
 
   const handleClick = (e) => {
+    // Try to start music on first click (browser auto-play workaround)
+    if (audioRef.current && audioRef.current.paused) {
+      audioRef.current.play().then(() => {
+        console.log('Music started on first click!');
+        setMusicStarted(true);
+      }).catch(error => {
+        console.log('Still cannot play music:', error);
+      });
+    }
+
     // Don't allow clicks after reaching 3
     if (clickCount >= 3) {
       return;
@@ -108,8 +120,53 @@ function App() {
     return () => clearInterval(flowerCleanup);
   }, []);
 
+  useEffect(() => {
+    // Auto-play background music when component mounts
+    const playMusic = () => {
+      if (audioRef.current) {
+        console.log('Audio element found, setting up music...');
+        audioRef.current.volume = 0.3; // Set volume to 30%
+        audioRef.current.loop = true; // Loop the music
+        
+        // Try to play the music
+        audioRef.current.play().then(() => {
+          console.log('Music started playing successfully!');
+        }).catch(error => {
+          console.log('Auto-play prevented:', error);
+          console.log('User needs to interact with the page first');
+        });
+      } else {
+        console.log('Audio element not found yet, retrying...');
+      }
+    };
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(playMusic, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="App" onClick={handleClick}>
+      {/* Hidden audio element for background music */}
+      {/* Note: YouTube URLs cannot be used directly in audio elements due to CORS restrictions */}
+      {/* You'll need to either: */}
+      {/* 1. Download the audio file and place it in your public folder */}
+      {/* 2. Use a different audio source that allows direct streaming */}
+      {/* 3. Use YouTube's iframe API (requires additional setup) */}
+      <audio
+        ref={audioRef}
+        style={{ display: 'none' }}
+        controls={false}
+        preload="auto"
+        onLoadStart={() => console.log('Audio loading started')}
+        onCanPlay={() => console.log('Audio can play')}
+        onError={(e) => console.log('Audio error:', e)}
+      >
+        <source src="/background-music.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+      
       <div className="background">
         <div className="stars"></div>
         <div className="stars2"></div>
@@ -119,6 +176,13 @@ function App() {
       <div className="content">
         <h1 className="title">Happy 40th Monthsary! Love</h1>
         <h5 className="subtitle">Click to everywhere in the website</h5>
+        
+        {/* Music indicator */}
+        {!musicStarted && (
+          <div className="music-indicator">
+            <p className="music-text"></p>
+          </div>
+        )}
         
         {/* Simple click counter */}
         <div className="click-counter">
